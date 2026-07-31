@@ -1,0 +1,41 @@
+# Central configuration for the Customer Churn Prediction project.
+# Every path is relative to the project root.
+
+data:
+  raw_path: data/raw/Telco_customer_churn.xlsx
+  processed_dir: data/processed
+  train_path: data/processed/train.csv
+  test_path: data/processed/test.csv
+
+columns:
+  target: Churn Value
+  id: CustomerID
+  # Known only after (or derived from) the churn outcome -> data leakage.
+  leakage: [Churn Label, Churn Score, CLTV, Churn Reason]
+  # Single constant value across all rows -> zero predictive information.
+  constant: [Count, Country, State]
+  # High-cardinality / redundant geography for a CA-only dataset.
+  geo: [City, Zip Code, Lat Long, Latitude, Longitude]
+  # Add-on service columns used to engineer num_addon_services.
+  addon_services:
+    [Online Security, Online Backup, Device Protection,
+     Tech Support, Streaming TV, Streaming Movies]
+
+split:
+  test_size: 0.2
+  random_state: 42
+  stratify: true
+
+training:
+  cv_folds: 5
+  scoring: roc_auc
+  n_iter: 40
+  random_state: 42
+
+evaluation:
+  threshold_metric: f2   # favour recall: missing a churner costs more than a wasted offer
+
+artifacts:
+  model_path: models/churn_model.joblib
+  metrics_path: reports/metrics.json
+  images_dir: reports/images
