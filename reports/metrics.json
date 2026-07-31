@@ -1,0 +1,58 @@
+{
+  "model": "logistic_regression",
+  "trained_at": "2026-07-31T04:07:05+00:00",
+  "best_params": {
+    "model__C": 2.6373339933815254
+  },
+  "cv_roc_auc": 0.8590210010797783,
+  "validation_report": {
+    "n_rows": 7043,
+    "n_cols": 33,
+    "churn_rate": 0.2653698707936959,
+    "blank_total_charges": 11,
+    "missing_values": {
+      "Churn Reason": 5174
+    },
+    "warnings": []
+  },
+  "test_at_default_threshold": {
+    "threshold": 0.5,
+    "accuracy": 0.7494677075940384,
+    "precision": 0.5183887915936952,
+    "recall": 0.7914438502673797,
+    "f1": 0.6264550264550265,
+    "f2": 0.7160135462022255,
+    "roc_auc": 0.8490221912216798,
+    "avg_precision": 0.6441616669496883,
+    "confusion_matrix": [
+      [
+        760,
+        275
+      ],
+      [
+        78,
+        296
+      ]
+    ]
+  },
+  "test_at_tuned_threshold": {
+    "threshold": 0.29000000000000004,
+    "accuracy": 0.6607523066004258,
+    "precision": 0.4341772151898734,
+    "recall": 0.9171122994652406,
+    "f1": 0.5893470790378007,
+    "f2": 0.7502187226596675,
+    "roc_auc": 0.8490221912216798,
+    "avg_precision": 0.6441616669496883,
+    "confusion_matrix": [
+      [
+        588,
+        447
+      ],
+      [
+        31,
+        343
+      ]
+    ]
+  }
+}
