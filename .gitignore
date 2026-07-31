@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+customerchurnpredection.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data, models, artifacts, logs — keep folder structure via .gitkeep
+data/raw/*
+data/processed/*
+models/*
+artifacts/*
+logs/*
+!**/.gitkeep
