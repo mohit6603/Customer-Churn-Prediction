@@ -166,23 +166,58 @@ EDA story — a model that contradicts EDA usually means a bug or leakage.
 
 **Q: How does the model get to production?**
 The artifact (`models/churn_model.joblib`) bundles the fitted pipeline, the
-tuned threshold, expected input columns and metadata. A Streamlit app loads
-it through `src/inference.py`, which replays the *identical* cleaning and
-feature-engineering functions used in training — one code path, no
-train/serve skew. Batch CSV scoring returns a ranked list, matching how the
-retention team consumes it.
+tuned threshold, expected input columns, model version and metadata. A
+FastAPI service (`api/main.py`) loads it once at startup and exposes
+`/predict` and `/predict/batch`; both go through `src/inference.py`, which
+replays the *identical* cleaning and feature-engineering functions used in
+training — one code path, no train/serve skew. Batch scoring returns a
+ranked list with a recommended action per customer, matching how the
+retention team consumes it. The API ships as a slim, non-root Docker image
+with a health check; the Streamlit app is a second front end on the same
+inference code.
+
+**Q: Why put Pydantic schemas in front of the model?**
+One-hot encoding silently maps an unseen category (e.g. "Month to month"
+without hyphens) to all zeros — the model would still return a confident,
+wrong score. Validating categories and ranges at the API edge turns that
+into a 422 error the caller can fix. Same principle as the training-time
+schema validator: bad data should fail loudly, never silently.
 
 **Q: How would you know the model is degrading in production?**
-Monitor input drift (feature distributions vs training), prediction drift
-(score distribution shifts), and — once churn outcomes arrive a month later —
-realised recall/precision. The schema validator already fails loudly on
-upstream contract changes. Retrain on a schedule or on drift alerts.
+Implemented: every prediction is logged to SQLite with its inputs, score and
+model version. Training saves a reference profile of every feature's
+distribution; `/monitoring/drift` compares recent traffic against it with
+the Population Stability Index (< 0.1 stable, 0.1–0.25 moderate, > 0.25
+significant → retrain). `/monitoring/stats` tracks the flagged rate and
+risk-band mix — a sudden jump is prediction drift. Once churn outcomes
+arrive a month later, realised recall/precision is the ground-truth check.
+
+**Q: Why PSI rather than a KS test for drift?**
+KS p-values become "significant" for tiny, harmless shifts once samples are
+large, and KS only works for numeric features. PSI is a magnitude, works on
+binned numeric *and* categorical features with one formula, and has
+industry-standard action thresholds that are easy to explain to the business.
+
+**Q: How do you version models and roll back?**
+Every training run writes an immutable `models/churn_model_<version>.joblib`
+(version = training timestamp) and appends a row with its metrics to
+`reports/model_registry.csv`; `churn_model.joblib` is always the latest.
+Rolling back is copying an older version over the latest and restarting the
+API. Every API response carries `model_version`, so any score is traceable
+to the exact model. Runs are also logged to MLflow (params, metrics, plots)
+for side-by-side comparison.
+
+**Q: What does your CI do?**
+GitHub Actions on every push/PR: ruff lint → 49 pytest tests (on synthetic
+data, so CI never needs the real dataset or model) → Docker image build.
+A broken API contract or a schema change fails the build before it ships.
 
 **Q: What would you improve with more time?**
 Real CLTV data to convert the threshold from F2 to a true expected-value
 optimisation; probability calibration; time-based validation if snapshots
 across months existed; champion/challenger deployment; feature store for
-serving parity at scale.
+serving parity at scale; automated retraining triggered by drift alerts;
+SHAP reasons per customer in the API response.
 
 ## Rapid-fire facts to remember
 
@@ -191,3 +226,6 @@ serving parity at scale.
 - Winner: logistic regression, C≈2.64 · CV ROC-AUC 0.859 · test ROC-AUC 0.849
 - Threshold 0.29 (F2-optimal, out-of-fold) · test recall 91.7% · precision 43.4%
 - Top drivers: contract, tenure, monthly charges, internet service
+- Served by FastAPI (6 endpoints) · Pydantic validation → 422 on bad input
+- PSI drift: < 0.1 stable · 0.1–0.25 moderate · > 0.25 retrain
+- Versioned models + CSV registry + MLflow · CI: ruff → pytest → Docker
