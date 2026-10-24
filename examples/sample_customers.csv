@@ -1,0 +1,11 @@
+CustomerID,Gender,Senior Citizen,Partner,Dependents,Tenure Months,Phone Service,Multiple Lines,Internet Service,Online Security,Online Backup,Device Protection,Tech Support,Streaming TV,Streaming Movies,Contract,Paperless Billing,Payment Method,Monthly Charges,Total Charges
+DEMO-0001,Female,No,Yes,No,2,Yes,No,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,89.10,178.20
+DEMO-0002,Male,No,Yes,Yes,64,Yes,Yes,DSL,Yes,Yes,Yes,Yes,No,No,Two year,No,Credit card (automatic),68.50,4384.00
+DEMO-0003,Female,Yes,No,No,5,Yes,Yes,Fiber optic,No,No,No,No,No,Yes,Month-to-month,Yes,Electronic check,85.75,428.75
+DEMO-0004,Male,No,No,No,30,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,No,Mailed check,20.25,607.50
+DEMO-0005,Female,No,Yes,Yes,15,Yes,No,DSL,Yes,No,No,Yes,No,No,One year,Yes,Bank transfer (automatic),55.30,829.50
+DEMO-0006,Male,Yes,No,No,1,Yes,No,Fiber optic,No,No,No,No,No,No,Month-to-month,Yes,Electronic check,70.40,70.40
+DEMO-0007,Female,No,No,No,48,No,No phone service,DSL,Yes,Yes,Yes,No,Yes,Yes,Two year,Yes,Bank transfer (automatic),58.90,2827.20
+DEMO-0008,Male,No,Yes,No,10,Yes,Yes,Fiber optic,No,Yes,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,99.65,996.50
+DEMO-0009,Female,No,Yes,Yes,72,Yes,Yes,Fiber optic,Yes,Yes,Yes,Yes,Yes,Yes,Two year,No,Credit card (automatic),115.10,8287.20
+DEMO-0010,Male,No,No,No,22,Yes,No,DSL,No,Yes,No,No,No,No,Month-to-month,No,Mailed check,49.95,1098.90
