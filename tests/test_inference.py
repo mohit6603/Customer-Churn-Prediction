@@ -3,7 +3,7 @@ Author : Mohit Patle
 
 Description:
 Unit tests for src/inference.py — batch and single prediction against
-a tiny pipeline trained on the synthetic fixture, so tests stay fast
+a tiny pipeline trained on the synthetic fixture (see conftest.py), so tests stay fast
 and never depend on the serialized production artifact.
 """
 
@@ -13,33 +13,8 @@ from typing import Any
 
 import pandas as pd
 import pytest
-from sklearn.linear_model import LogisticRegression
 
-from src.feature_engineering import add_features, build_preprocessor, get_feature_lists
-from src.inference import _risk_band, predict_batch, predict_single
-from src.model_training import build_pipeline
-from src.preprocessing import clean_raw_data
-
-
-@pytest.fixture()
-def artifact(raw_df: pd.DataFrame, config: dict) -> dict[str, Any]:
-    """A minimal but structurally complete model artifact."""
-    df = add_features(clean_raw_data(raw_df, config))
-    X, y = df.drop(columns=["churn_value"]), df["churn_value"]
-
-    pipeline = build_pipeline(
-        build_preprocessor(*get_feature_lists(X)),
-        LogisticRegression(max_iter=500),
-    )
-    pipeline.fit(X, y)
-
-    return {
-        "model": pipeline,
-        "model_name": "test_logreg",
-        "threshold": 0.5,
-        "input_columns": list(X.columns),
-        "trained_at": "test",
-    }
+from src.inference import _risk_band, get_model_version, predict_batch, predict_single
 
 
 def test_predict_batch_shapes_and_ranges(
@@ -83,3 +58,9 @@ def test_missing_required_column_raises(
 )
 def test_risk_bands(probability: float, band: str) -> None:
     assert _risk_band(probability) == band
+
+
+def test_model_version_derived_for_legacy_artifacts() -> None:
+    assert get_model_version({"model_version": "v1"}) == "v1"
+    assert get_model_version({"trained_at": "2026-07-31T04:07:05+00:00"}) == "v20260731T040705"
+    assert get_model_version({}) == "unversioned"

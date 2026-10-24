@@ -18,6 +18,7 @@ import pandas as pd
 
 from src.feature_engineering import add_features
 from src.preprocessing import clean_raw_data
+from src.tracking import make_model_version
 from src.utils import get_logger, get_project_root, load_config
 
 logger = get_logger(__name__)
@@ -159,6 +160,21 @@ def predict_single(
         "risk_band": _risk_band(proba),
         "threshold": float(artifact["threshold"]),
     }
+
+
+def get_model_version(artifact: dict[str, Any]) -> str:
+    """
+    Version id of a loaded artifact.
+
+    Artifacts trained before versioning was added carry no
+    ``model_version`` key, so the id is derived from ``trained_at``.
+    """
+    if "model_version" in artifact:
+        return str(artifact["model_version"])
+    try:
+        return make_model_version(str(artifact["trained_at"]))
+    except (KeyError, ValueError):
+        return "unversioned"
 
 
 def _risk_band(probability: float) -> str:

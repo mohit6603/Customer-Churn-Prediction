@@ -1,0 +1,13 @@
+.git
+.venv
+*.venv
+__pycache__
+.pytest_cache
+.ruff_cache
+notebooks
+data
+logs
+mlruns
+mlflow.db
+tests
+models/churn_model_v*.joblib

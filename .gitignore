@@ -19,3 +19,9 @@ models/*
 artifacts/*
 logs/*
 !**/.gitkeep
+
+# MLOps outputs
+mlruns/
+mlflow.db
+.ruff_cache/
+reports/drift_report.json

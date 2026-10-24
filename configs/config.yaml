@@ -39,3 +39,16 @@ artifacts:
   model_path: models/churn_model.joblib
   metrics_path: reports/metrics.json
   images_dir: reports/images
+  registry_path: reports/model_registry.csv
+
+monitoring:
+  prediction_log_path: logs/predictions.db
+  reference_profile_path: reports/reference_profile.json
+  drift_report_path: reports/drift_report.json
+  psi_bins: 10
+
+tracking:
+  enabled: true          # skipped automatically if mlflow is not installed
+  db_path: mlflow.db     # run metadata (SQLite backend)
+  artifact_dir: mlruns   # logged plots / reports
+  experiment: customer-churn

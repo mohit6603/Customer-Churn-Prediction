@@ -1,0 +1,11 @@
+# Minimal runtime dependencies for the API container (see Dockerfile).
+# scikit-learn must match the version the model artifact was trained with.
+pandas==3.0.5
+numpy==2.5.1
+scipy==1.18.0
+PyYAML==6.0.3
+scikit-learn==1.9.0
+joblib==1.5.3
+fastapi==0.162.0
+uvicorn==0.54.0
+python-multipart==0.0.32

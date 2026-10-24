@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Test
+        env:
+          MLFLOW_DISABLE_AGENT_HINT: "1"
+        run: python -m pytest -q
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    steps:
+      - uses: actions/checkout@v4
+
+      # The real model is gitignored; a placeholder lets CI verify the image builds.
+      - name: Placeholder model artifact
+        run: touch models/churn_model.joblib
+
+      - name: Build API image
+        run: docker build -t churn-api:ci .
