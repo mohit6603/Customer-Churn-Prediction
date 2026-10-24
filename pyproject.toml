@@ -1,0 +1,19 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["notebooks", "create_project.py", "*.venv"]
+
+[tool.ruff.lint]
+# pycodestyle, pyflakes, import order, bugbear, pyupgrade
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+# FastAPI's dependency-injection idiom: File(...)/Query(...) as defaults
+"api/main.py" = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    # The tiny 8-row test fixture cannot cover every category.
+    "ignore:Found unknown categories:UserWarning",
+]
