@@ -38,8 +38,7 @@ Customer-Churn-Prediction/
 ├── README.md
 ├── requirements.txt
 └── create_project.py
-=============================================================================================================
-
+============================================================================================================
 business problems:
 What exactly does "churn" mean for this business?
 Which customer attributes are available?
@@ -47,7 +46,7 @@ How is success measured? (Accuracy, Recall, etc.)
 What happens if the model predicts incorrectly?
 Can the business act on the predictions?
 
-=============================================================================================================
+============================================================================================================
 
 dataset: 
 IBM Telco Customer Churn Dataset
@@ -61,3 +60,36 @@ What are its limitations?
 Why not another dataset?
 Why did you choose this dataset?
 
+============================================================================================================
+Commit 1
+Project structure
+
+Commit 2
+Business understanding
+
+Commit 3
+Dataset understanding
+
+Commit 4
+EDA
+
+Commit 5
+Preprocessing
+
+Commit 6
+Feature engineering
+
+Commit 7
+Baseline model
+
+Commit 8
+Hyperparameter tuning
+
+Commit 9
+Deployment
+
+Commit 10
+Documentation
+
+src/data_loader.py
+This will be the only file responsible for loading data.
