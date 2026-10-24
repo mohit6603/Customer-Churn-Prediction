@@ -11,12 +11,21 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 import pytest
+from sklearn.linear_model import LogisticRegression
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from src.feature_engineering import (  # noqa: E402
+    add_features,
+    build_preprocessor,
+    get_feature_lists,
+)
+from src.model_training import build_pipeline  # noqa: E402
+from src.preprocessing import clean_raw_data  # noqa: E402
 from src.utils import load_config  # noqa: E402
 
 
@@ -73,3 +82,25 @@ def raw_df() -> pd.DataFrame:
             "Churn Reason": [None] * n,
         }
     )
+
+
+@pytest.fixture()
+def artifact(raw_df: pd.DataFrame, config: dict) -> dict[str, Any]:
+    """A minimal but structurally complete model artifact."""
+    df = add_features(clean_raw_data(raw_df, config))
+    X, y = df.drop(columns=["churn_value"]), df["churn_value"]
+
+    pipeline = build_pipeline(
+        build_preprocessor(*get_feature_lists(X)),
+        LogisticRegression(max_iter=500),
+    )
+    pipeline.fit(X, y)
+
+    return {
+        "model": pipeline,
+        "model_name": "test_logreg",
+        "threshold": 0.5,
+        "input_columns": list(X.columns),
+        "trained_at": "test",
+        "model_version": "vtest",
+    }
